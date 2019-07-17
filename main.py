@@ -106,8 +106,10 @@ class KeywordQueryEventListener(EventListener):
 
         keyword = event.get_keyword()
         # Find the keyword id using the keyword (since the keyword can be changed by users)
+        # pylint: disable=C0103
         for kwId, kw in extension.preferences.items():
             if kw == keyword:
+                # pylint: disable=C0103
                 keywordId = kwId
 
         file_type = FILE_SEARCH_ALL
