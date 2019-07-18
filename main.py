@@ -57,7 +57,7 @@ class FileSearchExtension(Extension):
             return []
 
         files = out.split('\n')
-        files = filter(None, files)  # remove empty lines
+        files = [_f for _f in files if _f]  # remove empty lines
 
         result = []
 
@@ -106,7 +106,7 @@ class KeywordQueryEventListener(EventListener):
 
         keyword = event.get_keyword()
         # Find the keyword id using the keyword (since the keyword can be changed by users)
-        for kwId, kw in extension.preferences.iteritems():
+        for kwId, kw in extension.preferences.items():
             if kw == keyword:
                 keywordId = kwId
 
