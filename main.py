@@ -56,8 +56,8 @@ class FileSearchExtension(Extension):
             self.logger.error(err)
             return []
 
-        files = out.split('\n')
-        files = filter(None, files)  # remove empty lines
+        files = out.split(b'\n')
+        files = [_f for _f in files if _f]  # remove empty lines
 
         result = []
 
@@ -80,10 +80,10 @@ class FileSearchExtension(Extension):
     def get_open_in_terminal_script(self, path):
         """ Returns the script based on the type of terminal """
         terminal_emulator = self.preferences['terminal_emulator']
-
+        cmd = terminal_emulator + ' ' + ''.join(['--working-directory=', path])
         # some terminals might work differently. This is already prepared for that.
         if terminal_emulator in ['gnome-terminal', 'terminator', 'tilix', 'xfce-terminal']:
-            return RunScriptAction(terminal_emulator, ['--working-directory', path])
+            return RunScriptAction(cmd)
 
         return DoNothingAction()
 
@@ -106,8 +106,10 @@ class KeywordQueryEventListener(EventListener):
 
         keyword = event.get_keyword()
         # Find the keyword id using the keyword (since the keyword can be changed by users)
-        for kwId, kw in extension.preferences.iteritems():
+        # pylint: disable=C0103
+        for kwId, kw in extension.preferences.items():
             if kw == keyword:
+                # pylint: disable=C0103
                 keywordId = kwId
 
         file_type = FILE_SEARCH_ALL
@@ -128,10 +130,10 @@ class KeywordQueryEventListener(EventListener):
         for result in results[:15]:
             items.append(ExtensionSmallResultItem(
                 icon=result['icon'],
-                name=result['path'],
+                name=result['path'].decode('Utf-8'),
                 on_enter=OpenAction(result['path']),
                 on_alt_enter=extension.get_open_in_terminal_script(
-                    result['path'])
+                    result['path'].decode('Utf-8'))
             ))
 
         return RenderResultListAction(items)
