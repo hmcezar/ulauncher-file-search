@@ -34,7 +34,7 @@ class FileSearchExtension(Extension):
 
     def search(self, query, file_type=None):
         """ Searches for Files using fd command """
-        cmd = ['timeout', '10s', 'ionice', '-c', '3', 'fd', '--threads', '4', '--hidden']
+        cmd = ['timeout', '6s', 'ionice', '-c', '3', 'fd', '--threads', '4', '--hidden']
 
         if file_type == FILE_SEARCH_FILE:
             cmd.append('-t')
